@@ -1,12 +1,12 @@
 import axios from "axios";
-import { baseUrl } from "../../api";
+import { baseUrl } from "../api";
 
-export const getRecipeList = (search) => {
+export const getRecipeList = async (search) => {
   try {
-    const response = axios.get(
+    const response = await axios.get(
       `${baseUrl}/api/json/v1/1/filter.php?a=${search}`
     );
-    return response;
+    return response.data;
   } catch (error) {
     console.log("error", error);
     return error.message;
