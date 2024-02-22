@@ -1,4 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  handlerCountryFilter,
+  handlerFilterIndex,
+  handlerSortAce,
+} from "../Models/Fliter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSlidersH, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,8 +12,13 @@ import { faSlidersH, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { CountryList } from "../Data/FilterList";
 
 const Filter = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [isOpenSort, setIsOpenSort] = React.useState(false);
+  const dispatch = useDispatch();
+  const [recipe, setRecipe] = useState("Indian");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenSort, setIsOpenSort] = useState(false);
+  const { FilterIndex, sortAcs } = useSelector(
+    (state) => state.currentCountryName
+  );
 
   const handleOpen = () => {
     setIsOpen(!isOpen);
@@ -20,15 +31,20 @@ const Filter = () => {
   };
 
   const handleCountrySelection = (event) => {
-    console.log(event.target.value);
+    setRecipe(event.recipe);
+    dispatch(handlerFilterIndex(event._id));
   };
 
   const handleCountrySubmit = () => {
-    console.log("Open");
+    dispatch(handlerCountryFilter(recipe));
+    setIsOpen(!isOpen);
+    setIsOpenSort(false);
   };
 
   const handleSortSubmit = () => {
-    console.log("Open");
+    dispatch(handlerSortAce());
+    setIsOpenSort(!isOpenSort);
+    setIsOpen(false);
   };
 
   const handleCountryCancel = () => {
@@ -67,8 +83,9 @@ const Filter = () => {
                         id={`country-radio-${index}`}
                         type="radio"
                         value={country.code}
+                        defaultChecked={index + 1 === FilterIndex}
                         name="default-radio"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-2"
+                        className="w-4 h-4 checked:bg-amber-500 bg-gray-100 border-gray-300 mr-2"
                       />
                       <label
                         htmlFor={`country-radio-${index}`}
@@ -103,7 +120,7 @@ const Filter = () => {
               onClick={handleOpenSort}
               className="dropdown-btn bg-gray-100 rounded-xl py-2 px-3 flex items-center cursor-pointer"
             >
-              <p className="mx-2 font-normal">Sort By</p>
+              <p className="mx-2 font-normal">Sort By Alphabet</p>
               <FontAwesomeIcon icon={faArrowDown} />
             </button>
             {isOpenSort && (
@@ -115,13 +132,13 @@ const Filter = () => {
                         id="default-radio-2"
                         type="radio"
                         value=""
+                        defaultChecked={sortAcs}
                         name="default-radio"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
                       <label
                         htmlFor="default-radio-2"
-                        className="ml-2 text-sm font-medium text-gray-900"
-                      >
+                        className="ml-2 text-sm font-medium text-gray-900">
                         A to Z
                       </label>
                     </div>
@@ -132,6 +149,7 @@ const Filter = () => {
                         id="default-radio-2"
                         type="radio"
                         value=""
+                        defaultChecked={!sortAcs}
                         name="default-radio"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       />
