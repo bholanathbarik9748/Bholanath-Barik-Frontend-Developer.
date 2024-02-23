@@ -9,10 +9,13 @@ import {
 import { handlerLoading } from "../Models/Fliter";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingComponent from "./Loading";
+import Model from "./Model";
 
 const Card = () => {
   const dispatch = useDispatch();
   const [recipeList, setRecipeList] = useState([]);
+  const [showModel, setShowModel] = useState(false);
+  const [modelInfo, setModelInfo] = useState("");
   const { Country, Loading, sortAcs } = useSelector(
     (state) => state.currentCountryName
   );
@@ -33,12 +36,24 @@ const Card = () => {
     getSearchRecipe();
   }, [Country, dispatch, sortAcs]);
 
+  const closeModel = () => {
+    setShowModel((prev) => !prev);
+  };
+
+  const handleModelChange = (Id) => {
+    setShowModel(true);
+    setModelInfo(Id);
+  };
+
   return (
     <>
       {Loading ? (
         <LoadingComponent />
       ) : (
         <section className="text-gray-600 body-font">
+          {showModel && (
+            <Model closeModal={closeModel} selectedRecipe={modelInfo} />
+          )}
           <div className="container px-1 py-16 mx-auto">
             <div className="flex flex-wrap -m-4">
               {recipeList.length === 0 ? (
@@ -48,6 +63,7 @@ const Card = () => {
                   <div
                     key={ind}
                     className="p-4 lg:w-1/3 md:w-1/2 cursor-pointer"
+                    onClick={() => handleModelChange(ele.idMeal)}
                   >
                     <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
                       <img

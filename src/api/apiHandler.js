@@ -24,3 +24,4 @@ export const getMealDetail = (search) => {
     return error.message;
   }
 };
+
